@@ -28,7 +28,6 @@ ALGORITHM = os.environ.get('ALGORITHM')
 
 
 class UserRequest(BaseModel):
-    phone_number: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: Optional[str] = None

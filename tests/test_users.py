@@ -25,7 +25,6 @@ def test_return_user(test_user):
     assert response.json().get('last_name') == 'Last'
     assert response.json().get('is_active') is True
     assert response.json().get('role') == 'admin'
-    assert response.json().get('phone_number') == '1212341234'
     assert bcrypt_context.verify(
         '1234', response.json().get('hashed_password'))
 
@@ -51,9 +50,9 @@ def test_change_password_fails(test_user):
 
 def test_update_user(test_user):
     response = client.put(
-        '/users/update', json={'phone_number': '(99)8888-7777'})
+        '/users/update', json={'last_name': 'New last'})
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     # Checking the change:
     response = client.get('/users')
-    assert response.json().get('phone_number') == '(99)8888-7777'
+    assert response.json().get('last_name') == 'New last'

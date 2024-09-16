@@ -66,9 +66,6 @@ async def update_user(
 
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
 
-    if hasattr(user_request, 'phone_number'):
-        user_model.phone_number = user_request.phone_number
-
     if hasattr(user_request, 'first_name'):
         user_model.first_name = user_request.first_name
 
