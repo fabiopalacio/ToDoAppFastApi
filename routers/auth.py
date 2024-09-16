@@ -22,7 +22,6 @@ class CreateUserRequest(BaseModel):
     first_name: str
     last_name: str
     password: str
-    role: str
 
 
 class Token(BaseModel):
@@ -63,9 +62,8 @@ async def create_user(
         db: db_dependency,
         create_user_request: CreateUserRequest):
 
-    users = db.query(Users).all().first()
-
-    if users is not None:
+    admin_user = db.query(Users).filter(Users.role == 'admin').first()
+    if admin_user is not None:
         role = 'user'
     else:
         role = 'admin'

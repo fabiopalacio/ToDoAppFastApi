@@ -59,12 +59,9 @@ if (editTodoForm) {
 
         try {
             const token = getCookie("access_token");
-            console.log(token);
             if (!token) {
                 throw new Error("Authentication token not found");
             }
-
-            console.log(`${todoId}`);
 
             const response = await fetch(`/todos/todo/${todoId}`, {
                 method: "PUT",
@@ -184,10 +181,8 @@ if (registerForm) {
             username: data.username,
             first_name: data.firstname,
             last_name: data.lastname,
-            role: data.role,
             password: data.password,
         };
-        console.log(payload);
 
         try {
             const response = await fetch("/auth", {
