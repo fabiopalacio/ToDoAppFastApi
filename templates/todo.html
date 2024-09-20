@@ -6,43 +6,66 @@
             Your ToDo's!
         </div>
         <div class="card-body">
-            <h5 class="card-title">
-                List of your ToDo's!
-            </h5>
-            <p class="card-text">
-                Information regarding stuff that needs to be complete
-            </p>
+            <div class="d-flex justify-content-around align-items-center mb-5">
+                <p class="card-text mb-0 info-frame info-frame-incompleted">
+                    Tasks to do: {{incompleted}}
+                </p>
+                <h5 class="card-title mb-0">
+                    List of your ToDo's!
+                </h5>
+                <p class="card-text mb-0 info-frame info-frame-completed">
+                    Tasks done: {{completed}}
+                </p>
+            </div>
+            
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Info</th>
+                        <th scope="col">Priority</th>
                         <th scope="col">Actions</th>
+                        <th scope="col">Was done?</th>
+
+
                     </tr>
                 </thead>
                 <tbody>
                     {% for todo in todos %}
                         {% if todo.complete == False %}
-                            <tr class="pointer">
-                                <td>{{loop.index}}</td>
+                            <tr id="cursor-context-menu"  >
+                                <td >{{loop.index}}</td>
                                 <td>{{todo.title}}</td>
+                                <td >{{todo.priority}}</td>
                                 <td>
-                                    <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info">Edit</button>
+                                    <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info">View</button>
                                 </td>
+                                <td><input type="checkbox" name="is_todo_done" id="" value="{{todo.id}}"></td>
                             </tr>
                         {% else %}
                             <tr class="pointer alert alert-success">
                                 <td>{{loop.index}}</td>
-                                <td class = "strike-through-td">{{todo.title}}</td>
+                                <td class = "strike-through-td font-italic">{{todo.title}}</td>
+                                <td class = "strike-through-td font-italic">{{todo.priority}}</td>
+
                                 <td>
                                     <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info">Edit</button>
                                 </td>
+                                <td  class = "strike-through-td font-italic">Done</td>
+
                             </tr>
                         {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="add-todo-page" class="btn btn-primary"> Add ToDo</a>
+            <div class="d-flex justify-content-around">
+
+                <a href="add-todo-page" class="btn btn-primary mx-5"> Add ToDo</a>
+                <button type="button" class="btn btn-danger mx-5" id="remove-todos-btn" onclick="removeCompleted()"> 
+                    Remove Completed ToDos</button> 
+                <button type="button" class="btn btn-success mx-5" id="complete-todos-btn" onclick="saveChanges()"> 
+                    Complete ToDos</button>
+            </div>
         </div>
     </div>
 </div>

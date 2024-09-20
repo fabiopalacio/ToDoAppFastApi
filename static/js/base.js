@@ -26,11 +26,12 @@ if (todoForm) {
             });
 
             if (response.ok) {
-                form.reset(); // Clear the form
+                window.location.href = "/todos/todo-page";
             } else {
                 // Handle error
                 const errorData = await response.json();
-                alert(`Error: ${errorData.detail}`);
+                console.log(`ERROR: Unexpected response`);
+                alert("An error occurred. Please try again.");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -240,4 +241,63 @@ function logout() {
 
     // Redirect to the login page
     window.location.href = "/auth/login-page";
+}
+
+// Completing ToDos
+
+async function saveChanges() {
+    let checked_todos = document.querySelectorAll(
+        'input[name="is_todo_done"]:checked'
+    );
+    let todos_id = Array.from(checked_todos).map((checkbox) => checkbox.value);
+
+    console.log(todos_id);
+
+    payload = {
+        todos_id: todos_id,
+    };
+
+    try {
+        const response = await fetch("/todos/finish_todos", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+            window.location.href = "/todos/todo-page";
+        } else {
+            // Handle error
+            const errorData = await response.json();
+            alert(`Error: ${errorData.detail}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    }
+}
+
+async function removeCompleted() {
+    try {
+        const response = await fetch("/todos/delete_completed_todos", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+        });
+        if (response.ok) {
+            window.location.href = "/todos/todo-page";
+        } else {
+            // Handle error
+            const errorData = await response.json();
+            alert(`Error: ${errorData.detail}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    }
 }
