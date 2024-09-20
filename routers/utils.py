@@ -33,6 +33,10 @@ class UserRequest(BaseModel):
     email: Optional[str] = None
 
 
+class TodosCompleteUpdate(BaseModel):
+    todos_id: list
+
+
 class UserVerificatin(BaseModel):
     password: str
     new_password: str = Field(min_length=6)

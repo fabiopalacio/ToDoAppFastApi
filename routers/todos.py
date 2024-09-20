@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException, Path, Request, status
 from fastapi.templating import Jinja2Templates
 
@@ -6,7 +7,7 @@ from starlette.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from models.models import Todos
-from routers.utils import db_dependency, get_current_user, user_dependecy
+from routers.utils import TodosCompleteUpdate, db_dependency, get_current_user, user_dependecy
 
 templates = Jinja2Templates(directory='templates')
 
@@ -19,7 +20,7 @@ router = APIRouter(
 
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3)
-    description: str = Field(min_length=3, max_length=100)
+    description: Optional[str] = Field(max_length=100)
     priority: int = Field(ge=0, le=5)
     complete: bool
 
@@ -41,14 +42,25 @@ async def render_todo_page(request: Request, db: db_dependency):
         if user is None:
             return redirect_to_login()
 
-        todos = db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
+        todos = await read_all(user, db)
+
+        completed = 0
+        incompleted = 0
+
+        for todo in todos:
+            if todo.complete:
+                completed = completed+1
+            else:
+                incompleted = incompleted + 1
 
         return templates.TemplateResponse(
             'todo.html',
             {
                 'request': request,
                 'todos': todos,
-                'user': user
+                'user': user,
+                'completed': completed,
+                'incompleted': incompleted
             }
         )
     except:
@@ -80,7 +92,8 @@ async def render_edit_todo_page(request: Request, todo_id: int, db: db_dependenc
         if user is None:
             return redirect_to_login()
 
-        todo = db.query(Todos).filter(Todos.id == todo_id).first()
+        todo = await read_todo(user, db, todo_id)
+
         return templates.TemplateResponse(
             'edit-todo.html',
             {
@@ -97,7 +110,7 @@ async def render_edit_todo_page(request: Request, todo_id: int, db: db_dependenc
 
 @router.get('/', status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependecy, db: db_dependency):
-    return db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
+    return db.query(Todos).filter(Todos.owner_id == user.get('id')).order_by(Todos.complete, Todos.priority.desc()).all()
 
 
 @router.get('/todo/{todo_id}', status_code=status.HTTP_200_OK)
@@ -133,8 +146,8 @@ async def create_todo(
             detail='Could not validate user.')
 
     todo_model = Todos(**todo_request.model_dump(), owner_id=user.get('id'))
-
     db.add(todo_model)
+
     db.commit()
 
 
@@ -188,4 +201,41 @@ async def delete_todo(
             detail='ToDo not found.')
 
     db.delete(todo_model)
+    db.commit()
+
+
+@router.delete('/delete_completed_todos', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_in_batch(
+        user: user_dependecy,
+        db: db_dependency):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Could not validate user.')
+
+    todos = db.query(Todos).filter(Todos.owner_id == user.get('id')).filter(
+        Todos.complete == 'true').all()
+    print(todos)
+    for todo in todos:
+        db.delete(todo)
+
+    db.commit()
+
+
+@router.patch('/finish_todos', status_code=status.HTTP_204_NO_CONTENT)
+async def update_in_batch(
+        user: user_dependecy,
+        db: db_dependency,
+        todos_id: TodosCompleteUpdate):
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Could not validate user.')
+    for item in todos_id.todos_id:
+        todo = db.query(Todos).filter(Todos.id == item).filter(
+            Todos.owner_id == user.get('id')).first()
+        if todo:
+            todo.complete = True
+            db.add(todo)
     db.commit()
