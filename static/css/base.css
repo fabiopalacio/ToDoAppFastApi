@@ -41,15 +41,21 @@ h6 {
 }
 
 .info-frame-completed {
-    color: #fff;
-    background-color: #28a745;
+    color: #28a745;
     border-color: #28a745;
 }
 
 .info-frame-incompleted {
-    color: #212529;
-    background-color: #ffc107;
-    border-color: #ffc107;
+    color: #c82333;
+    border-color: #c82333;
+}
+
+.btn-shadow {
+    box-shadow: 2px 2px 8px #888888;
+}
+
+.btn-shadow:hover {
+    box-shadow: 5px 8px 16px #888888;
 }
 
 /* h1 {
