@@ -1,71 +1,65 @@
 {% include "layout.html" %}
 
 <div class="container">
-    <div class="card text-center">
-        <div class="card-header">
+    <div class=" card text-center">
+        <div class=" card-header">
             Your ToDo's!
         </div>
         <div class="card-body">
-            <div class="d-flex justify-content-around align-items-center mb-5">
-                <p class="card-text mb-0 info-frame info-frame-incompleted">
+            <div class="row d-flex justify-content-around align-items-center mb-5">
+                <p class="col col-5 card-text mb-0 info-frame info-frame-incompleted mx-auto">
                     Tasks to do: {{incompleted}}
                 </p>
-                <h5 class="card-title mb-0">
-                    List of your ToDo's!
-                </h5>
-                <p class="card-text mb-0 info-frame info-frame-completed">
+
+                <p class="col col-5 card-text mb-0 info-frame info-frame-completed mx-auto">
                     Tasks done: {{completed}}
                 </p>
             </div>
             
-            <table class="table table-hover">
+            <table class=" table table-hover">
                 <thead>
-                    <tr>
-                        <th scope="col">#</th>
+                    <tr class=''>
                         <th scope="col">Info</th>
                         <th scope="col">Priority</th>
                         <th scope="col">Actions</th>
-                        <th scope="col">Was done?</th>
-
-
+                        <th scope="col" class='d-none d-sm-block'>Was done?</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     {% for todo in todos %}
                         {% if todo.complete == False %}
-                            <tr id="cursor-context-menu"  >
-                                <td >{{loop.index}}</td>
+                            <tr class='' id="cursor-context-menu"  >
                                 <td>{{todo.title}}</td>
                                 <td >{{todo.priority}}</td>
                                 <td>
                                     <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info">View</button>
                                 </td>
-                                <td><input type="checkbox" name="is_todo_done" id="" value="{{todo.id}}"></td>
+                                <td><input class='d-none d-sm-block' type="checkbox" name="is_todo_done" id="" value="{{todo.id}}"></td>
                             </tr>
                         {% else %}
                             <tr class="pointer alert alert-success">
-                                <td>{{loop.index}}</td>
                                 <td class = "strike-through-td font-italic">{{todo.title}}</td>
                                 <td class = "strike-through-td font-italic">{{todo.priority}}</td>
 
                                 <td>
-                                    <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info">Edit</button>
+                                    <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button" class="btn btn-info ">Edit</button>
                                 </td>
-                                <td  class = "strike-through-td font-italic">Done</td>
+                                <td  class = "d-none d-sm-block strike-through-td font-italic">Done</td>
 
                             </tr>
                         {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
-            <div class="d-flex justify-content-around">
 
-                <a href="add-todo-page" class="btn btn-primary btn-shadow mx-5"> Add ToDo</a>
-                <button type="button" class="btn btn-danger btn-shadow mx-5" id="remove-todos-btn" onclick="removeCompleted()"> 
+            <div class="row d-flex justify-content-around p-2">
+                <a href="add-todo-page" class="col col-8 col-sm-3 btn btn-primary btn-shadow mx-auto my-1 d-flex justify-content-center align-items-center"> Add ToDo</a>
+                <button type="button" class="col col-8 col-sm-3 btn btn-danger btn-shadow mx-auto my-1" id="remove-todos-btn" onclick="removeCompleted()"> 
                     Remove Completed ToDos</button> 
-                <button type="button" class="btn btn-success btn-shadow mx-5" id="complete-todos-btn" onclick="saveChanges()"> 
+                <button type="button" class="d-none d-sm-block col col-8 col-sm-3 btn btn-success btn-shadow mx-auto my-1" id="complete-todos-btn" onclick="saveChanges()"> 
                     Complete ToDos</button>
             </div>
+
         </div>
     </div>
 </div>

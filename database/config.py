@@ -7,14 +7,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-db_user = os.environ.get('DATABASE_USER')
-db_key = os.environ.get('DATABASE_KEY')
+db_user = os.environ.get('POSTGRES_USER')
+db_key = os.environ.get('POSTGRES_PASSWORD')
 db_port = os.environ.get('DATABASE_PORT')
-db_url = os.environ.get('DATABASE_URL')
+db_url = os.environ.get('POSTGRES_HOST')
+db_database = os.environ.get('POSTGRES_DATABASE')
 
 
 SQLALCHEMY_DATABASE_URL = 'postgresql://' + db_user + \
-    ':' + db_key + '@' + db_url + ':' + db_port + '/postgres'
+    ':' + db_key + '@' + db_url + ':' + db_port + '/' + db_database
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, )

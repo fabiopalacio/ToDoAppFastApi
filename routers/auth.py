@@ -95,6 +95,6 @@ async def login_for_access_token(
             detail='Could not validate user.')
 
     token = create_access_token(
-        user.username, user.id, user.role, timedelta(hours=1))
+        user.username, user.id, user.role, timedelta(hours=12))
 
     return {'access_token': token, 'token_type': 'bearer'}
